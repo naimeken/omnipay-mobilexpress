@@ -5,15 +5,22 @@
 
 namespace Omnipay\MobilExpress\Messages;
 
+use Omnipay\Common\Exception\InvalidRequestException;
+
 class CaptureRequest extends AbstractRequest
 {
     /**
      * @return array
+     * @throws InvalidRequestException
      */
     public function getData(): array
     {
-        return [];
+        $data = $this->getSalesRequestParams();
+        $this->setRequestParams($data);
+
+        return $data;
     }
+
 
     /**
      * @return string
@@ -28,7 +35,7 @@ class CaptureRequest extends AbstractRequest
      */
     public function getSensitiveData(): array
     {
-        return [];
+        return ['CardNum', 'LastYear', 'LastMonth', 'CVV'];
     }
 
     /**
@@ -36,7 +43,20 @@ class CaptureRequest extends AbstractRequest
      */
     public function getProcessName(): string
     {
-        // TODO: Implement getProcessName() method.
+        return 'ProcessPaymentWithCard';
+    }
+
+    /**
+     * @param $data
+     * @return AuthorizeResponse
+     */
+    protected function createResponse($data): AuthorizeResponse
+    {
+        $response = new AuthorizeResponse($this, $data);
+        $requestParams = $this->getRequestParams();
+        $response->setServiceRequestParams($requestParams);
+
+        return $response;
     }
 }
 

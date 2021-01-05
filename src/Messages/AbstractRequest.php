@@ -112,6 +112,23 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     }
 
     /**
+     * @param string $value
+     * @return AbstractRequest
+     */
+    public function setMobilExpressTransId(string $value): AbstractRequest
+    {
+        return $this->setParameter('mobilExpressTransId', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMobilExpressTransId(): string
+    {
+        return $this->getParameter('mobilExpressTransId');
+    }
+
+    /**
      * @param int $value
      * @return AbstractRequest
      */
@@ -177,6 +194,24 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'ReturnURL' => $this->getPaymentMethod() === self::PAYMENT_METHOD_3D ? $this->getReturnUrl() : '',
             'ClientIP' => $this->getClientIp(),
             'POSConfiguration' => ''
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCompletePurchaseRequestParams(): array
+    {
+        return [
+            'MerchantKey' => $this->getMerchantId(),
+            'APIpassword' => $this->getPassword(),
+            'TransactionId' => $this->getTransactionId(),
+            'MobilexpressTransId' => $this->getMobilExpressTransId(),
+            'CardNum' => $this->getCard()->getNumber(),
+            'LastYear' => $this->getCard()->getExpiryYear(),
+            'LastMonth' => $this->getCard()->getExpiryMonth(),
+            'CVV' => $this->getCard()->getCvv(),
+            'ClientIP' => $this->getClientIp(),
         ];
     }
 
