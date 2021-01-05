@@ -20,10 +20,10 @@ class GatewayTest extends GatewayTestCase
     {
         /** @var Gateway gateway */
         $this->gateway = new Gateway(null, $this->getHttpRequest());
-        $this->gateway->setMerchantId('4aadd718-3fea-4e3d-a371-09dedf387cd5');
+        $this->gateway->setMerchantId('xxxx');
         $this->gateway->setTestMode(true);
-        $this->gateway->setPassword('Xok9CvNI60PySOxM9nle');
-        $this->gateway->setPosId('31049');
+        $this->gateway->setPassword('xxxx');
+        $this->gateway->setPosId('xxxx');
     }
 
     public function testPurchase()
@@ -32,7 +32,7 @@ class GatewayTest extends GatewayTestCase
             'card' => $this->getCardInfo(),
             'orderId' => uniqid(),
             'amount' => '500',
-            //'returnUrl' => "https://eticaret.garanti.com.tr/destek/postback.aspx",
+            'returnUrl' => "https://localhost",
             'installment' => 0,
             'paymentMethod' => '',
             'clientIp' => '129.168.2.1'
@@ -40,8 +40,6 @@ class GatewayTest extends GatewayTestCase
 
         /** @var PurchaseResponse $response */
         $response = $this->gateway->purchase($this->options)->send();
-        var_dump($response->isSuccessful(), $response->getMessage(), $response->getServiceRequestParams());
-        exit;
         $this->assertTrue($response->isSuccessful());
     }
 
