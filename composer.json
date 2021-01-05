@@ -1,0 +1,30 @@
+{
+  "name": "alegra/omnipay-mobilexpress",
+  "type": "library",
+  "description": "Mobilexpress gateway for Omnipay payment processing library",
+  "homepage": "https://github.com/alegraio/omnipay-mobilexpress",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Omnipay\\MobilExpress\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OmnipayTest\\MobilExpress\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^7.3",
+    "omnipay/common": "^3",
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "ext-dom": "*",
+    "ext-soap": "*"
+  },
+  "require-dev": {
+    "omnipay/tests": "^3",
+    "squizlabs/php_codesniffer": "^3"
+  },
+  "prefer-stable": true
+}
