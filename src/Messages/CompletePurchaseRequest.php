@@ -34,7 +34,7 @@ class CompletePurchaseRequest extends AbstractRequest
      */
     public function getSensitiveData(): array
     {
-        return ['CardNum', 'LastYear', 'LastMonth', 'CVV'];
+        return [];
     }
 
     /**
@@ -43,6 +43,57 @@ class CompletePurchaseRequest extends AbstractRequest
     public function getProcessName(): string
     {
         return 'FinishPaymentProcessWithCard';
+    }
+
+    /**
+     * @return string
+     */
+    public function getResult(): string
+    {
+        return $this->getParameter('result');
+    }
+
+    /**
+     * @param string $value
+     * @return CompletePurchaseRequest
+     */
+    public function setResult(string $value): CompletePurchaseRequest
+    {
+        return $this->setParameter('result', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash(): string
+    {
+        return $this->getParameter('hash');
+    }
+
+    /**
+     * @param string $value
+     * @return CompletePurchaseRequest
+     */
+    public function setHash(string $value): CompletePurchaseRequest
+    {
+        return $this->setParameter('hash', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTotalAmount(): string
+    {
+        return $this->getParameter('totalAmount');
+    }
+
+    /**
+     * @param string $value
+     * @return CompletePurchaseRequest
+     */
+    public function setTotalAmount(string $value): CompletePurchaseRequest
+    {
+        return $this->setParameter('totalAmount', $value);
     }
 
     /**

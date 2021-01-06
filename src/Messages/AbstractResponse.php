@@ -5,12 +5,22 @@
 
 namespace Omnipay\MobilExpress\Messages;
 
+use Omnipay\Common\CreditCard;
 use Omnipay\Common\Message\RedirectResponseInterface;
+use Omnipay\Common\Message\RequestInterface;
 
 abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse implements RedirectResponseInterface
 {
     /** @var array */
     public $serviceRequestParams;
+
+    public function __construct(RequestInterface $request, $data)
+    {
+        parent::__construct($request, $data);
+        $parsedXML = @simplexml_load_string($this->getData());
+        $content = json_decode(json_encode($parsedXML), true);
+        $this->setData($content);
+    }
 
     /**
      * @return string|null
@@ -18,7 +28,7 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getMessage(): ?string
     {
         if (!$this->isSuccessful()) {
-            return isset($this->data['BankMessage']) ? $this->data['BankMessage'] : $this->data['ErrorMessage'];
+            return isset($this->data['BankMessage']) ? $this->data['BankMessage'] : $this->data['ResultCode'];
         }
 
         return null;
@@ -50,6 +60,31 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectMethod(): string
+    {
+        return 'POST';
+    }
+
+    public function getRedirectData(): array
+    {
+        if ($this->isRedirect()) {
+            /** @var CreditCard $card */
+            $card = $this->request->getCard();
+
+            return [
+                'CardNumber' => $card->getNumber(),
+                'CardLastYear' => $card->getExpiryYear(),
+                'CardLastMonth' => $card->getExpiryMonth(),
+                'CardCVV' => $card->getCvv(),
+            ];
+        }
+
+        return [];
     }
 
     /**
@@ -98,5 +133,13 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getMobilExpressTransId(): ?string
     {
         return $this->data['MobilexpressTransId'] ?? null;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData(array $data): void
+    {
+        $this->data = $data;
     }
 }

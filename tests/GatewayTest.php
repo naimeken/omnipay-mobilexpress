@@ -30,6 +30,39 @@ class GatewayTest extends GatewayTestCase
         $this->gateway->setPosId('xxxx');
     }
 
+    public function testPurchase()
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'orderId' => '34654634w343',
+            'amount' => '500',
+            'returnUrl' => "http://playground.io/examples/test.php",
+            'installment' => 0,
+            'paymentMethod' => '',
+            'clientIp' => '129.168.2.1'
+        ];
+
+        /** @var PurchaseResponse $response */
+        $response = $this->gateway->purchase($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
+    public function testCompletePurchase()
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'transactionId' => '456u326j87344',
+            'mobilexpressTransId' => '200094132',
+            'result' => '3DSuccess',
+            'totalAmount' => '500',
+            'hash' => 'WZDx7ytilQtE7oatzPUYSnpju6M%3d'
+        ];
+
+        /** @var CompletePurchaseResponse $response */
+        $response = $this->gateway->completePurchase($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
     public function testCapture()
     {
         $this->options = [
@@ -59,37 +92,6 @@ class GatewayTest extends GatewayTestCase
 
         /** @var AuthorizeResponse $response */
         $response = $this->gateway->authorize($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
-    }
-
-    public function testCompletePurchase()
-    {
-        $this->options = [
-            'card' => $this->getCardInfo(),
-            'transactionId' => '456u326j873',
-            'mobilExpressTransId' => '200093936',
-            'clientIp' => '129.168.2.1'
-        ];
-
-        /** @var CompletePurchaseResponse $response */
-        $response = $this->gateway->completePurchase($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
-    }
-
-    public function testPurchase()
-    {
-        $this->options = [
-            'card' => $this->getCardInfo(),
-            'orderId' => '456u326j873',
-            'amount' => '500',
-            'returnUrl' => "http://playground.io/examples/test.php",
-            'installment' => 0,
-            'paymentMethod' => '3d',
-            'clientIp' => '129.168.2.1'
-        ];
-
-        /** @var PurchaseResponse $response */
-        $response = $this->gateway->purchase($this->options)->send();
         $this->assertTrue($response->isSuccessful());
     }
 
