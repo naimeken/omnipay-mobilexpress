@@ -5,8 +5,10 @@ namespace OmnipayTest\MobilExpress;
 use Omnipay\Common\CreditCard;
 use Omnipay\MobilExpress\Gateway;
 use Omnipay\MobilExpress\Messages\AuthorizeResponse;
+use Omnipay\MobilExpress\Messages\CancelResponse;
 use Omnipay\MobilExpress\Messages\CompletePurchaseResponse;
 use Omnipay\MobilExpress\Messages\PurchaseResponse;
+use Omnipay\MobilExpress\Messages\RefundResponse;
 use Omnipay\Tests\GatewayTestCase;
 
 
@@ -89,6 +91,33 @@ class GatewayTest extends GatewayTestCase
         /** @var PurchaseResponse $response */
         $response = $this->gateway->purchase($this->options)->send();
         $this->assertTrue($response->isSuccessful());
+    }
+
+    public function testRefund(): void
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'orderId' => '235676554534',
+            'amount' => '200',
+            'installment' => 0
+        ];
+        /** @var RefundResponse $response */
+        $response = $this->gateway->refund($this->options)->send();
+        self::assertTrue($response->isSuccessful());
+    }
+
+
+    public function testCancel(): void
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'orderId' => '456u326j87344',
+            'amount' => '500',
+            'installment' => 0
+        ];
+        /** @var CancelResponse $response */
+        $response = $this->gateway->void($this->options)->send();
+        self::assertTrue($response->isSuccessful());
     }
 
     /**

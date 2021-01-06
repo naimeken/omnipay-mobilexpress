@@ -87,6 +87,23 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     }
 
     /**
+     * @return string|null
+     */
+    public function getReferenceTransactionId(): ?string
+    {
+        return $this->getParameter('referenceTransactionId');
+    }
+
+    /**
+     * @param string $value
+     * @return AbstractRequest
+     */
+    public function setReferenceTransactionId(string $value): AbstractRequest
+    {
+        return $this->setParameter('referenceTransactionId', $value);
+    }
+
+    /**
      * @return int
      */
     public function getInstallment(): int
@@ -213,6 +230,35 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'CVV' => $this->getCard()->getCvv(),
             'ClientIP' => $this->getClientIp(),
         ];
+    }
+
+    protected function getRefundRequestParams(): array
+    {
+        $data = [
+            'ProcessType' => $this->getProcessType(),
+            'MerchantKey' => $this->getMerchantId(),
+            'APIpassword' => $this->getPassword(),
+            'TransactionId' => $this->getOrderId(),
+            'CardNum' => '',
+            'LastYear' => 0,
+            'LastMonth' => 0,
+            'CVV' => '',
+            'POSID' => $this->getPosId(),
+            'TotalAmount' => $this->getAmount(),
+            'InstallmentCount' => $this->getInstallment(),
+            'UseLoyaltyPoints' => false,
+            'Request3D' => false,
+            'ReturnURL' => '',
+            'ClientIP' => '',
+            'POSConfiguration' => ''
+        ];
+        // Required if bank is Vakıfbank
+        $referenceTransactionId = $this->getReferenceTransactionId();
+        if (!empty($referenceTransactionId)){
+            $extCampaignInfo = implode(':', ['BankReferenceNo', $referenceTransactionId]);
+            $data['ExtCampaignInfo'] = $extCampaignInfo;
+        }
+        return $data;
     }
 
 

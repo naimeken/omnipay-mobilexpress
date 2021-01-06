@@ -1,13 +1,13 @@
 <?php
 /**
- * MobilExpress Refund Request
+ * MobilExpress Cancel Request
  */
 
 namespace Omnipay\MobilExpress\Messages;
 
 use Exception;
 
-class RefundRequest extends AbstractRequest
+class CancelRequest extends AbstractRequest
 {
     /**
      * @return array|mixed
@@ -26,7 +26,7 @@ class RefundRequest extends AbstractRequest
      */
     public function getProcessType(): string
     {
-        return 'refund';
+        return 'cancel';
     }
 
     /**
@@ -47,11 +47,11 @@ class RefundRequest extends AbstractRequest
 
     /**
      * @param $data
-     * @return RefundResponse
+     * @return CancelResponse
      */
-    protected function createResponse($data): RefundResponse
+    protected function createResponse($data): CancelResponse
     {
-        $response = new RefundResponse($this, $data);
+        $response = new CancelResponse($this, $data);
         $requestParams = $this->getRequestParams();
         $response->setServiceRequestParams($requestParams);
 
