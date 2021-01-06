@@ -13,15 +13,14 @@ use Omnipay\Common\Exception\InvalidRequestException;
 
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest implements RequestInterface
 {
-    use BaseSoapService;
 
     /** @var array */
     protected $requestParams;
 
     /** @var array */
     protected $endpoints = [
-        'test' => 'https://test.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx?WSDL',
-        'prod' => 'https://www.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx?WSDL'
+        'test' => 'https://test.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx',
+        'prod' => 'https://www.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx'
     ];
 
     /** @var string */
@@ -32,7 +31,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
      */
     public function getEndpoint(): string
     {
-        return $this->getTestMode() ? $this->endpoints["test"] : $this->endpoints["prod"];
+        return ($this->getTestMode() ? $this->endpoints["test"] : $this->endpoints["prod"]) . '/' . $this->getProcessName();
     }
 
     /**
@@ -117,7 +116,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
      */
     public function setMobilExpressTransId(string $value): AbstractRequest
     {
-        return $this->setParameter('mobilExpressTransId', $value);
+        return $this->setParameter('mobilexpressTransId', $value);
     }
 
     /**
@@ -125,7 +124,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
      */
     public function getMobilExpressTransId(): string
     {
-        return $this->getParameter('mobilExpressTransId');
+        return $this->getParameter('mobilexpressTransId');
     }
 
     /**
@@ -145,12 +144,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     public function sendData($data)
     {
         try {
-            $response = $this->makeRequestToService($this->getEndpoint(), $this->getProcessName(), $data);
-            $method = $this->getProcessName() . 'Result';
-            $stdClass = property_exists($response, $method) ? (array)$response->$method : (array)$response;
-            $result = json_decode(json_encode($stdClass, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+            foreach ($data as $key => $value) {
+                if (is_bool($value)) {
+                    $data[$key] = ($value) ? 'true' : 'false';
+                }
+            }
 
-            return $this->createResponse($result);
+            $httpRequest = $this->httpClient->request(
+                $this->getHttpMethod(),
+                $this->getEndpoint(),
+                ['Content-Type' => 'application/x-www-form-urlencoded'],
+                http_build_query($data)
+            );
+
+            $response = (string)$httpRequest->getBody()->getContents();
+
+            return $this->createResponse($response);
         } catch (\Exception $e) {
             throw new InvalidResponseException(
                 'Error communicating with payment gateway: ' . $e->getMessage(),
@@ -193,7 +202,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'Request3D' => $this->getPaymentMethod() === self::PAYMENT_METHOD_3D ?? false,
             'ReturnURL' => $this->getPaymentMethod() === self::PAYMENT_METHOD_3D ? $this->getReturnUrl() : '',
             'ClientIP' => $this->getClientIp(),
-            'POSConfiguration' => ''
+            'ClientUserAgent' => '',
+            'ExtCampaignInfo' => '',
+            'CustomerID' => '',
+            'Email' => '',
+            'CustomerName' => '',
+            'CustomerPhone' => '',
+            'CardHolder' => '',
+            'POSConfiguration' => '',
         ];
     }
 
@@ -211,7 +227,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'LastYear' => $this->getCard()->getExpiryYear(),
             'LastMonth' => $this->getCard()->getExpiryMonth(),
             'CVV' => $this->getCard()->getCvv(),
-            'ClientIP' => $this->getClientIp(),
+            'ClientIP' => '',
+            'ClientUserAgent' => ''
         ];
     }
 
