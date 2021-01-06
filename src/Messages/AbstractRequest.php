@@ -20,7 +20,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     /** @var array */
     protected $endpoints = [
         'test' => 'https://test.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx',
-        'prod' => 'https://www.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx?WSDL'
+        'prod' => 'https://www.mobilexpress.com.tr/checkout/v7/FastCheckoutService.asmx'
     ];
 
     /** @var string */
