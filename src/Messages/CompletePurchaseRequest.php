@@ -15,7 +15,10 @@ class CompletePurchaseRequest extends AbstractRequest
      */
     public function getData()
     {
-        return [];
+        $data = $this->getCompletePurchaseRequestParams();
+        $this->setRequestParams($data);
+
+        return $data;
     }
 
     /**
@@ -31,7 +34,7 @@ class CompletePurchaseRequest extends AbstractRequest
      */
     public function getSensitiveData(): array
     {
-        return [];
+        return ['CardNum', 'LastYear', 'LastMonth', 'CVV'];
     }
 
     /**
@@ -39,6 +42,19 @@ class CompletePurchaseRequest extends AbstractRequest
      */
     public function getProcessName(): string
     {
-        // TODO: Implement getProcessName() method.
+        return 'FinishPaymentProcessWithCard';
+    }
+
+    /**
+     * @param $data
+     * @return CompletePurchaseResponse
+     */
+    protected function createResponse($data): CompletePurchaseResponse
+    {
+        $response = new CompletePurchaseResponse($this, $data);
+        $requestParams = $this->getRequestParams();
+        $response->setServiceRequestParams($requestParams);
+
+        return $response;
     }
 }

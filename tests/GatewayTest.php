@@ -4,6 +4,8 @@ namespace OmnipayTest\MobilExpress;
 
 use Omnipay\Common\CreditCard;
 use Omnipay\MobilExpress\Gateway;
+use Omnipay\MobilExpress\Messages\AuthorizeResponse;
+use Omnipay\MobilExpress\Messages\CompletePurchaseResponse;
 use Omnipay\MobilExpress\Messages\PurchaseResponse;
 use Omnipay\Tests\GatewayTestCase;
 
@@ -26,15 +28,61 @@ class GatewayTest extends GatewayTestCase
         $this->gateway->setPosId('xxxx');
     }
 
+    public function testCapture()
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'orderId' => '6980090809',
+            'amount' => '500',
+            'installment' => 0,
+            'paymentMethod' => '',
+            'clientIp' => '129.168.2.1'
+        ];
+
+        /** @var AuthorizeResponse $response */
+        $response = $this->gateway->capture($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
+    public function testAuthorize()
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'orderId' => '6980090809',
+            'amount' => '500',
+            'installment' => 0,
+            'paymentMethod' => '',
+            'clientIp' => '129.168.2.1'
+        ];
+
+        /** @var AuthorizeResponse $response */
+        $response = $this->gateway->authorize($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
+    public function testCompletePurchase()
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'transactionId' => '456u326j873',
+            'mobilExpressTransId' => '200093936',
+            'clientIp' => '129.168.2.1'
+        ];
+
+        /** @var CompletePurchaseResponse $response */
+        $response = $this->gateway->completePurchase($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
     public function testPurchase()
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'orderId' => uniqid(),
+            'orderId' => '456u326j873',
             'amount' => '500',
-            'returnUrl' => "https://localhost",
+            'returnUrl' => "http://playground.io/examples/test.php",
             'installment' => 0,
-            'paymentMethod' => '',
+            'paymentMethod' => '3d',
             'clientIp' => '129.168.2.1'
         ];
 
@@ -42,7 +90,6 @@ class GatewayTest extends GatewayTestCase
         $response = $this->gateway->purchase($this->options)->send();
         $this->assertTrue($response->isSuccessful());
     }
-
 
     /**
      * @return CreditCard

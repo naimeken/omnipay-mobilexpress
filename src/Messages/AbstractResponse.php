@@ -18,7 +18,7 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getMessage(): ?string
     {
         if (!$this->isSuccessful()) {
-            return $this->data['BankMessage'];
+            return isset($this->data['BankMessage']) ? $this->data['BankMessage'] : $this->data['ErrorMessage'];
         }
 
         return null;
@@ -37,15 +37,43 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
      */
     public function isSuccessful(): bool
     {
-        return $this->data['ResultCode'] === 'Success';
+        return ($this->data['ResultCode'] === 'Success' || $this->data['ResultCode'] === 'ThreeDSecureURLCreated');
     }
 
     /**
-     * @return string
+     * @return boolean
      */
-    public function getTransactionReference(): string
+    public function isRedirect(): bool
     {
-        return $this->data['MobilexpressTransId'];
+        if (isset($this->data['ResultCode']) && $this->data['ResultCode'] === 'ThreeDSecureURLCreated') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRedirectUrl(): ?string
+    {
+        if ($this->isRedirect()) {
+            return $this->data['ThreeDRedirectURL'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransactionReference(): ?string
+    {
+        if ($this->isSuccessful()) {
+            return isset($this->data['BankTransId']) ? $this->data['BankTransId'] : $this->request->getOrderId();
+        }
+
+        return null;
     }
 
     /**
@@ -67,12 +95,8 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     /**
      * @return string|null
      */
-    public function getBankTransId(): ?string
+    public function getMobilExpressTransId(): ?string
     {
-        if ($this->isSuccessful()) {
-            return $this->data['BankTransId'];
-        }
-
-        return null;
+        return $this->data['MobilexpressTransId'] ?? null;
     }
 }
