@@ -175,8 +175,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
      *
      * @return string
      */
-    protected
-    function getHttpMethod(): string
+    protected function getHttpMethod(): string
     {
         return 'POST';
     }
@@ -185,8 +184,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
      * @return array
      * @throws InvalidRequestException
      */
-    protected
-    function getSalesRequestParams(): array
+    protected function getSalesRequestParams(): array
     {
         return [
             'ProcessType' => $this->getProcessType(),
@@ -218,8 +216,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     /**
      * @return array
      */
-    protected
-    function getCompletePurchaseRequestParams(): array
+    protected function getCompletePurchaseRequestParams(): array
     {
         return [
             'MerchantKey' => $this->getMerchantId(),
@@ -229,7 +226,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'CardNum' => $this->getCard()->getNumber(),
             'LastYear' => $this->getCard()->getExpiryYear(),
             'LastMonth' => $this->getCard()->getExpiryMonth(),
-            'CVV' => $this->getCard()->getCvv()
+            'CVV' => $this->getCard()->getCvv(),
+            'ClientIP' => '',
+            'ClientUserAgent' => ''
         ];
     }
 
@@ -237,10 +236,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     /**
      * @param array $data
      */
-    protected
-    function setRequestParams(
-        array $data
-    ): void {
+    protected function setRequestParams(array $data): void
+    {
         array_walk_recursive($data, [$this, 'updateValue']);
         $this->requestParams = $data;
     }
@@ -249,11 +246,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
      * @param string $data
      * @param string $key
      */
-    protected
-    function updateValue(
-        string &$data,
-        string $key
-    ): void {
+    protected function updateValue(string &$data, string $key): void
+    {
         $sensitiveData = $this->getSensitiveData();
 
         if (\in_array($key, $sensitiveData, true)) {
@@ -265,8 +259,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     /**
      * @return array
      */
-    protected
-    function getRequestParams(): array
+    protected function getRequestParams(): array
     {
         return [
             'url' => $this->getEndPoint(),

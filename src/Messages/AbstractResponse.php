@@ -28,7 +28,7 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getMessage(): ?string
     {
         if (!$this->isSuccessful()) {
-            return isset($this->data['BankMessage']) ? $this->data['BankMessage'] : $this->data['ErrorMessage'];
+            return isset($this->data['BankMessage']) ? $this->data['BankMessage'] : $this->data['ResultCode'];
         }
 
         return null;
