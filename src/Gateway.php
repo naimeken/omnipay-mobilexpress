@@ -9,6 +9,7 @@ use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Common\Message\RequestInterface;
 use Omnipay\MobilExpress\Messages\AuthorizeRequest;
+use Omnipay\MobilExpress\Messages\CancelRequest;
 use Omnipay\MobilExpress\Messages\CaptureRequest;
 use Omnipay\MobilExpress\Messages\CompletePurchaseRequest;
 use Omnipay\MobilExpress\Messages\PurchaseRequest;
@@ -21,7 +22,6 @@ use Omnipay\MobilExpress\Messages\RefundRequest;
  * @method \Omnipay\Common\Message\RequestInterface createCard(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface updateCard(array $options = array())
  * @method \Omnipay\Common\Message\RequestInterface deleteCard(array $options = array())
- * @method \Omnipay\Common\Message\RequestInterface void(array $options = array())
  */
 class Gateway extends AbstractGateway
 {
@@ -144,5 +144,14 @@ class Gateway extends AbstractGateway
     public function refund(array $parameters = []): RequestInterface
     {
         return $this->createRequest(RefundRequest::class, $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     * @return RequestInterface
+     */
+    public function void(array $parameters = []): RequestInterface
+    {
+        return $this->createRequest(CancelRequest::class, $parameters);
     }
 }
