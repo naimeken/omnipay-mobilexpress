@@ -317,7 +317,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
         return [
             'url' => $this->getEndPoint(),
             'type' => $this->getProcessType(),
-            'function' => $this->getProcessName(),
             'data' => $this->requestParams,
             'method' => $this->getHttpMethod()
         ];

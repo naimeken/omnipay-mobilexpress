@@ -30,6 +30,20 @@ class GatewayTest extends GatewayTestCase
         $this->gateway->setPosId('xxxx');
     }
 
+    public function testCompletePurchase()
+    {
+        $this->options = [
+            'card' => $this->getCardInfo(),
+            'transactionId' => '22334455',
+            'mobilexpressTransId' => '200094514',
+            'result' => '3DSuccess'
+        ];
+
+        /** @var CompletePurchaseResponse $response */
+        $response = $this->gateway->completePurchase($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
     public function testPurchase()
     {
         $this->options = [
@@ -47,21 +61,6 @@ class GatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
     }
 
-    public function testCompletePurchase()
-    {
-        $this->options = [
-            'card' => $this->getCardInfo(),
-            'transactionId' => '456u326j87344',
-            'mobilexpressTransId' => '200094132',
-            'result' => '3DSuccess',
-            'totalAmount' => '500',
-            'hash' => 'WZDx7ytilQtE7oatzPUYSnpju6M%3d'
-        ];
-
-        /** @var CompletePurchaseResponse $response */
-        $response = $this->gateway->completePurchase($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
-    }
 
     public function testCapture()
     {

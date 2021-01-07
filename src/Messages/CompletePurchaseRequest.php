@@ -9,12 +9,18 @@ use Exception;
 
 class CompletePurchaseRequest extends AbstractRequest
 {
+    private const THREE3D_SUCCESS = '3DSuccess';
+
     /**
      * @return array|mixed
      * @throws Exception
      */
     public function getData()
     {
+        if ($this->getResult() !== self::THREE3D_SUCCESS) {
+            throw new \RuntimeException('3D verification error. Reason: ' . $this->getResult());
+        }
+
         $data = $this->getCompletePurchaseRequestParams();
         $this->setRequestParams($data);
 
@@ -60,40 +66,6 @@ class CompletePurchaseRequest extends AbstractRequest
     public function setResult(string $value): CompletePurchaseRequest
     {
         return $this->setParameter('result', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash(): string
-    {
-        return $this->getParameter('hash');
-    }
-
-    /**
-     * @param string $value
-     * @return CompletePurchaseRequest
-     */
-    public function setHash(string $value): CompletePurchaseRequest
-    {
-        return $this->setParameter('hash', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTotalAmount(): string
-    {
-        return $this->getParameter('totalAmount');
-    }
-
-    /**
-     * @param string $value
-     * @return CompletePurchaseRequest
-     */
-    public function setTotalAmount(string $value): CompletePurchaseRequest
-    {
-        return $this->setParameter('totalAmount', $value);
     }
 
     /**
