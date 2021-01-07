@@ -120,11 +120,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getPosId(): int
+    public function getPosId(): string
     {
-        return $this->getParameter('posId') ?? 0;
+        return $this->getParameter('posId') ?? '0';
     }
 
     /**
@@ -145,10 +145,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return AbstractRequest
      */
-    public function setPosId(int $value): AbstractRequest
+    public function setPosId(string $value): AbstractRequest
     {
         return $this->setParameter('posId', $value);
     }
@@ -212,7 +212,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'LastYear' => $this->getCard()->getExpiryYear(),
             'LastMonth' => $this->getCard()->getExpiryMonth(),
             'CVV' => $this->getCard()->getCvv(),
-            'POSID' => $this->getPosId(),
+            'POSID' => (int)$this->getPosId(),
             'TotalAmount' => $this->getAmount(),
             'InstallmentCount' => $this->getInstallment(),
             'UseLoyaltyPoints' => false,
@@ -260,7 +260,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'LastYear' => 0,
             'LastMonth' => 0,
             'CVV' => '',
-            'POSID' => $this->getPosId(),
+            'POSID' => (int)$this->getPosId(),
             'TotalAmount' => $this->getAmount(),
             'InstallmentCount' => $this->getInstallment(),
             'UseLoyaltyPoints' => false,

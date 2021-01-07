@@ -71,18 +71,18 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getPosId(): int
+    public function getPosId(): string
     {
-        return $this->getParameter('posId') ?? 0;
+        return $this->getParameter('posId') ?? '0';
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return Gateway
      */
-    public function setPosId(int $value): Gateway
+    public function setPosId(string $value): Gateway
     {
         return $this->setParameter('posId', $value);
     }

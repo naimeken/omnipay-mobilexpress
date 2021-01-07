@@ -28,18 +28,19 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getMessage(): ?string
     {
         if (!$this->isSuccessful()) {
-            return isset($this->data['BankMessage']) ? $this->data['BankMessage'] : $this->data['ResultCode'];
+            $errorMessage = empty($this->data['ErrorMessage']) ? '' : $this->data['ErrorMessage'];
+            return $this->data['BankMessage'] ?? $errorMessage ?? $this->data['ResultCode'];
         }
 
         return null;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCode(): string
+    public function getCode(): ?string
     {
-        return $this->data['BankReturnCode'];
+        return $this->data['BankReturnCode'] ?? $this->data['ResultCode'] ?? null;
     }
 
     /**
@@ -55,11 +56,7 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
      */
     public function isRedirect(): bool
     {
-        if (isset($this->data['ResultCode']) && $this->data['ResultCode'] === 'ThreeDSecureURLCreated') {
-            return true;
-        }
-
-        return false;
+        return isset($this->data['ResultCode']) && $this->data['ResultCode'] === 'ThreeDSecureURLCreated';
     }
 
     /**
@@ -105,7 +102,7 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getTransactionReference(): ?string
     {
         if ($this->isSuccessful()) {
-            return isset($this->data['BankTransId']) ? $this->data['BankTransId'] : $this->request->getOrderId();
+            return $this->data['BankTransId'] ?? $this->request->getOrderId();
         }
 
         return null;

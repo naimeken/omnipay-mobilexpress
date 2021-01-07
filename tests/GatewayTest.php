@@ -4,11 +4,12 @@ namespace OmnipayTest\MobilExpress;
 
 use Omnipay\Common\CreditCard;
 use Omnipay\MobilExpress\Gateway;
-use Omnipay\MobilExpress\Messages\AuthorizeResponse;
-use Omnipay\MobilExpress\Messages\CancelResponse;
-use Omnipay\MobilExpress\Messages\CompletePurchaseResponse;
-use Omnipay\MobilExpress\Messages\PurchaseResponse;
-use Omnipay\MobilExpress\Messages\RefundResponse;
+use Omnipay\MobilExpress\Messages\AuthorizeRequest;
+use Omnipay\MobilExpress\Messages\CancelRequest;
+use Omnipay\MobilExpress\Messages\CaptureRequest;
+use Omnipay\MobilExpress\Messages\CompletePurchaseRequest;
+use Omnipay\MobilExpress\Messages\PurchaseRequest;
+use Omnipay\MobilExpress\Messages\RefundRequest;
 use Omnipay\Tests\GatewayTestCase;
 
 
@@ -23,42 +24,46 @@ class GatewayTest extends GatewayTestCase
     public function setUp()
     {
         /** @var Gateway gateway */
-        $this->gateway = new Gateway(null, $this->getHttpRequest());
-        $this->gateway->setMerchantId('xxxx');
+        $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
+        /*$this->gateway->setMerchantId('xxxx');
         $this->gateway->setTestMode(true);
         $this->gateway->setPassword('xxxx');
-        $this->gateway->setPosId('xxxx');
+        $this->gateway->setPosId(9999);*/
     }
 
     public function testCompletePurchase()
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'transactionId' => '22334455',
-            'mobilexpressTransId' => '200094514',
+            'transactionId' => '107134669907',
+            'mobilexpressTransId' => '200094667',
             'result' => '3DSuccess'
         ];
 
-        /** @var CompletePurchaseResponse $response */
-        $response = $this->gateway->completePurchase($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
+        /** @var CompletePurchaseRequest $request */
+        $request = $this->gateway->completePurchase($this->options);
+
+        self::assertInstanceOf(CompletePurchaseRequest::class, $request);
+        self::assertSame('107134669907', $request->getTransactionId());
     }
 
     public function testPurchase()
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'orderId' => '34654634w343',
-            'amount' => '500',
+            'orderId' => '107134669907',
+            'amount' => '300',
             'returnUrl' => "http://playground.io/examples/test.php",
             'installment' => 0,
-            'paymentMethod' => '',
+            'paymentMethod' => '3d',
             'clientIp' => '129.168.2.1'
         ];
 
-        /** @var PurchaseResponse $response */
-        $response = $this->gateway->purchase($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
+        /** @var PurchaseRequest $request */
+        $request = $this->gateway->purchase($this->options);
+
+        self::assertInstanceOf(PurchaseRequest::class, $request);
+        self::assertSame('107134669907', $request->getOrderId());
     }
 
 
@@ -66,45 +71,51 @@ class GatewayTest extends GatewayTestCase
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'orderId' => '6980090809',
-            'amount' => '500',
-            'installment' => 0,
+            'orderId' => '1071346699',
+            'amount' => '330',
+            'installment' => 2,
             'paymentMethod' => '',
             'clientIp' => '129.168.2.1'
         ];
 
-        /** @var AuthorizeResponse $response */
-        $response = $this->gateway->capture($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
+        /** @var CaptureRequest $request */
+        $request = $this->gateway->capture($this->options);
+
+        self::assertInstanceOf(CaptureRequest::class, $request);
+        self::assertSame('1071346699', $request->getOrderId());
     }
 
     public function testAuthorize()
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'orderId' => '6980090809',
-            'amount' => '500',
-            'installment' => 0,
+            'orderId' => '1071346699',
+            'amount' => '330',
+            'installment' => 2,
             'paymentMethod' => '',
             'clientIp' => '129.168.2.1'
         ];
 
-        /** @var AuthorizeResponse $response */
-        $response = $this->gateway->authorize($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
+        /** @var AuthorizeRequest $request */
+        $request = $this->gateway->authorize($this->options);
+
+        self::assertInstanceOf(AuthorizeRequest::class, $request);
+        self::assertSame('1071346699', $request->getOrderId());
     }
 
     public function testRefund(): void
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'orderId' => '235676554534',
+            'orderId' => '107134669902',
             'amount' => '200',
-            'installment' => 0
+            'installment' => 5
         ];
-        /** @var RefundResponse $response */
-        $response = $this->gateway->refund($this->options)->send();
-        self::assertTrue($response->isSuccessful());
+        /** @var RefundRequest $request */
+        $request = $this->gateway->refund($this->options);
+
+        self::assertInstanceOf(RefundRequest::class, $request);
+        self::assertSame('107134669902', $request->getOrderId());
     }
 
 
@@ -112,13 +123,15 @@ class GatewayTest extends GatewayTestCase
     {
         $this->options = [
             'card' => $this->getCardInfo(),
-            'orderId' => '456u326j87344',
+            'orderId' => '107134669903',
             'amount' => '500',
-            'installment' => 0
+            'installment' => 5
         ];
-        /** @var CancelResponse $response */
-        $response = $this->gateway->void($this->options)->send();
-        self::assertTrue($response->isSuccessful());
+        /** @var CancelRequest $request */
+        $request = $this->gateway->void($this->options);
+
+        self::assertInstanceOf(CancelRequest::class, $request);
+        self::assertSame('107134669903', $request->getOrderId());
     }
 
     /**
@@ -129,10 +142,8 @@ class GatewayTest extends GatewayTestCase
         $cardInfo = $this->getValidCard();
         $cardInfo['number'] = '4022774022774026';
         $cardInfo['expiryMonth'] = 12;
-        $cardInfo['expiryYear'] = 2022;
+        $cardInfo['expiryYear'] = 2023;
         $cardInfo['cvv'] = '000';
-        $card = new CreditCard($cardInfo);
-
-        return $card;
+        return new CreditCard($cardInfo);
     }
 }
