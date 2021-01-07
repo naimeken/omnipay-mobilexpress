@@ -267,7 +267,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'Request3D' => false,
             'ReturnURL' => '',
             'ClientIP' => '',
-            'POSConfiguration' => ''
+            'ClientUserAgent' => '',
+            'ExtCampaignInfo' => '',
+            'CustomerID' => '',
+            'Email' => '',
+            'CustomerName' => '',
+            'CustomerPhone' => '',
+            'CardHolder' => '',
+            'POSConfiguration' => '',
         ];
         // Required if bank is Vakıfbank
         $referenceTransactionId = $this->getReferenceTransactionId();
