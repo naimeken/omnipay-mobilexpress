@@ -113,7 +113,6 @@ class Helper
     public function getCompletePurchaseParams(): array
     {
         $params = [
-            // 'card' => $this->getValidCard(), // Optional
             'transactionId' => '5ff71149a988f',
             'mobilexpressTransId' => '200094805',
             'result' => '3DSuccess'
