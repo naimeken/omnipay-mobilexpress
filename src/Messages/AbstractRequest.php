@@ -240,6 +240,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest i
             'APIpassword' => $this->getPassword(),
             'TransactionId' => $this->getTransactionId(),
             'MobilexpressTransId' => $this->getMobilExpressTransId(),
+            'CardNum' => '',
+            'LastYear' => 0,
+            'LastMonth' => 0,
+            'CVV' => '',
             'ClientIP' => '',
             'ClientUserAgent' => ''
         ];
