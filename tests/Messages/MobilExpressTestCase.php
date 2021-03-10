@@ -56,9 +56,7 @@ class MobilExpressTestCase extends TestCase
 
     protected function getCompletePurchaseParams(): array
     {
-        $cardParams = $this->getCardParams();
         $params = [
-            'card' => $cardParams,
             'transactionId' => '107134669907',
             'mobilexpressTransId' => '200094667',
             'result' => '3DSuccess'
