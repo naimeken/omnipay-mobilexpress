@@ -1,5 +1,5 @@
 {
-  "name": "alegra/omnipay-mobilexpress",
+  "name": "naimeken/omnipay-mobilexpress",
   "type": "library",
   "description": "Mobilexpress gateway for Omnipay payment processing library",
   "homepage": "https://github.com/alegraio/omnipay-mobilexpress",
@@ -15,7 +15,7 @@
     }
   },
   "require": {
-    "php": "^7.3",
+    "php": "^7.3 || ^8.0",
     "omnipay/common": "^3",
     "ext-json": "*",
     "ext-simplexml": "*",
